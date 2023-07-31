@@ -15,6 +15,8 @@ import { Reviews } from "./ProfileComponents/Reviews/Reviews";
 import { Favorites } from "./ProfileComponents/Favorites/Favorites";
 import { PaymentOrders } from "./ProfileComponents/PaymentOrders/PaymentOrders";
 
+
+import ModalProfile from "../ModalProfile/ModalProfile";
 //_________________________module_________________________
 function ProfileV2() {
     //global states:
@@ -78,6 +80,8 @@ function ProfileV2() {
             nickName: "",
             address: "",
         });
+        dispatch(get_User_By_Email(localStorage.getItem("email")));
+
     };
     const discardChanges = (event) => {
         event.preventDefault();
@@ -106,14 +110,14 @@ function ProfileV2() {
         setPicture(user?.picture)
     }, [dispatch, removeComment, collapse, loading]);
 
-    //if (!user.name) return <Modal />
+    if (!user.name) return <ModalProfile />
 
     //component:
     return (
         <div className={s.profileContainer}>
             <div className={`${s.infoProfile} ${s[theme("infoProfile")]}`}>
                 <div className={s.profileImage}>
-                    {loading && <div className={s.spinner}></div>}
+                {loading && <div className={s.spinner}></div>}
                     {user?.admin ? (
                         <div className={s.config} onClick={openConfig}>
                             <NavLink to="/adminpanel">
@@ -138,7 +142,8 @@ function ProfileV2() {
                 </div>
                 <h2>{user.name}</h2>
                 <h5>{user.nickName}</h5>
-                <h5>{user.address}</h5>
+                {user.address && <h5>Dirección: {user?.address}</h5> }
+                
                 <div className={s.profileButton}>
                     {!collapse ? (
                         <div className={s.refresh}>

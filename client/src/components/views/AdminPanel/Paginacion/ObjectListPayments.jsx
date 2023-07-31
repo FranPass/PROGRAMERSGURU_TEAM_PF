@@ -5,7 +5,6 @@ import s from "./Payments.module.css";
 
 export default function ObjectsListPayments({ objects, titulo }) {
     const [currentPage, setCurrentPage] = useState(1);
-    
     const filteredObjects = objects.sort((a,b)=> {
         const date_a = new Date(a.date)
         const date_b = new Date(b.date)
