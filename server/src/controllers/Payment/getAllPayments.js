@@ -10,6 +10,9 @@ const getAllPayments = async (req, res) => {
                     model: User,
                     attributes: ["name", "email"],
                 },
+                {
+                    model: Product,
+                }
             ],
         });
 

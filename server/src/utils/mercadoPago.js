@@ -80,6 +80,7 @@ try {
           quantity: quantity,
         },
       });
+      if (product.stock < quantity) return res.status(403).json({message: "No hay stock"})
       product.stock = product.stock - quantity
       await product.save()
     }

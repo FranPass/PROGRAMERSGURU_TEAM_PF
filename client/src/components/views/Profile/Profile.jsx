@@ -18,11 +18,16 @@ import { PaymentOrders } from "./ProfileComponents/PaymentOrders/PaymentOrders";
 //_________________________module_________________________
 function ProfileV2() {
     //global states:
-    const dark = useSelector((state) => state.darkMode);
     const user = useSelector((state) => state.user);
     const userId = user?.id;
 
     //local states
+    const loadingFunction = (base) => {
+        const suffix = loading ? "loading" : "";
+            return `${base}-${suffix}`;
+    }
+    const [loading, setLoading] = useState(false)
+    const [picture, setPicture] = useState("")
     const [removeComment, setRemoveComment] = useState(false);
     const [email, setEmail] = useState("");
     const [collapse, setCollapse] = useState(false);
@@ -98,7 +103,8 @@ function ProfileV2() {
     useEffect(() => {
         setTab(localStorage.getItem("tab") || "favorites")
         dispatch(get_User_By_Email(localStorage.getItem("email")));
-    }, [dispatch, removeComment, collapse]);
+        setPicture(user?.picture)
+    }, [dispatch, removeComment, collapse, loading]);
 
     //if (!user.name) return <Modal />
 
@@ -107,6 +113,7 @@ function ProfileV2() {
         <div className={s.profileContainer}>
             <div className={`${s.infoProfile} ${s[theme("infoProfile")]}`}>
                 <div className={s.profileImage}>
+                    {loading && <div className={s.spinner}></div>}
                     {user?.admin ? (
                         <div className={s.config} onClick={openConfig}>
                             <NavLink to="/adminpanel">
@@ -115,21 +122,23 @@ function ProfileV2() {
                         </div>
                     ) : null}
                     {collapse ? (
+                        <>
                         <div className={s.camera}>
                             <EditProfilePicture
                                 userId={userId}
-                                setNewUserData={setNewUserData}
-                                newUserData={newUserData}
+                                setPicture={setPicture}
+                                setLoading={setLoading}
                             />
                         </div>
+                        </>
                     ) : null}
-                    <div className={!collapse ? s.picture : s.editPicture}>
-                        <img className={s.image} src={user.picture} />
+                    <div className={`${collapse ? s.picture : s.editPicture} ${s[loadingFunction(collapse ? "picture" : "editPicture")]}`}>
+                        <img className={s.image} src={picture} />
                     </div>
                 </div>
                 <h2>{user.name}</h2>
                 <h5>{user.nickName}</h5>
-                <p>{user.address}</p>
+                <h5>{user.address}</h5>
                 <div className={s.profileButton}>
                     {!collapse ? (
                         <div className={s.refresh}>
